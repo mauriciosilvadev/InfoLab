@@ -16,7 +16,6 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Criar usuário administrador principal
         User::create([
             'name' => 'Mauricio',
             'email' => 'mauricio.s.dev@gmail.com',
