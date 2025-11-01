@@ -1,0 +1,27 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\User;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+
+class UserSeeder extends Seeder
+{
+    use WithoutModelEvents;
+
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        // Criar usuário administrador principal
+        User::create([
+            'name' => 'Mauricio',
+            'email' => 'mauricio.s.dev@gmail.com',
+            'password' => Hash::make('123123'),
+            'email_verified_at' => now(),
+        ]);
+    }
+}
