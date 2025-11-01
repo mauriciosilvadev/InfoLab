@@ -1,0 +1,103 @@
+# Laravel
+*.log
+.env
+.env.backup
+.env.production
+.env.local
+.env.testing
+.phpactor.json
+.phpunit.result.cache
+/auth.json
+/public/build
+/public/hot
+/public/storage
+/storage/*.key
+/storage/pail
+/vendor
+/bootstrap/cache/*.php
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/logs/*
+!/storage/logs/.gitignore
+
+# Node.js
+/node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Docker & Sail
+docker-compose.override.yml
+docker-compose.yml.backup
+/.docker
+/docker/data
+/docker/logs
+*.dockerfile.backup
+
+# Database
+database.sqlite
+*.sql
+*.db
+
+# IDE & Editors
+/.fleet
+/.idea
+/.nova
+/.phpunit.cache
+/.vscode
+/.zed
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+.directory
+*.tmp
+
+# Backup files
+*.backup
+*.bak
+*.orig
+
+# Logs
+*.log
+logs/
+
+# Cache
+.cache/
+*.cache
+
+# Temporary files
+tmp/
+temp/
+
+# Laravel Homestead
+Homestead.json
+Homestead.yaml
+
+# Laravel Telescope (se usar)
+/storage/telescope
+
+# Laravel Horizon (se usar)
+/storage/horizon
+
+# Coverage reports
+/coverage
+/coverage.xml
+/.phpunit.cache
+
+# Compiled assets
+/public/css/app.css
+/public/js/app.js
+/public/mix-manifest.json
+
+# Hot reload
+/public/hot
+
+# Composer lock file
+*.lock
