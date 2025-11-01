@@ -54,30 +54,6 @@ class ActivityInfolist
                     ])
                     ->columns(2),
 
-                Section::make('Objeto Afetado')
-                    ->schema([
-                        TextEntry::make('subject_type')
-                            ->label('Tipo do Objeto')
-                            ->formatStateUsing(fn (?string $state): string => $state ? class_basename($state) : 'N/A'),
-
-                        TextEntry::make('subject_id')
-                            ->label('ID do Objeto')
-                            ->placeholder('N/A'),
-                    ])
-                    ->columns(2),
-
-                Section::make('Usuário Responsável')
-                    ->schema([
-                        TextEntry::make('causer_type')
-                            ->label('Tipo do Usuário')
-                            ->formatStateUsing(fn (?string $state): string => $state ? class_basename($state) : 'Sistema'),
-
-                        TextEntry::make('causer_id')
-                            ->label('ID do Usuário')
-                            ->placeholder('Sistema'),
-                    ])
-                    ->columns(2),
-
                 Section::make('Propriedades')
                     ->schema([
                         KeyValueEntry::make('properties')
@@ -86,8 +62,7 @@ class ActivityInfolist
                             ->keyLabel('Propriedade')
                             ->valueLabel('Valor'),
                     ])
-                    ->collapsible()
-                    ->collapsed(),
+                    ->collapsible(),
             ]);
     }
 }
