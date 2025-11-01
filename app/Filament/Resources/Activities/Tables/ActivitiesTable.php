@@ -3,12 +3,12 @@
 namespace App\Filament\Resources\Activities\Tables;
 
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Filament\Forms\Components\DatePicker;
 
 class ActivitiesTable
 {
@@ -43,37 +43,9 @@ class ActivitiesTable
                         if (strlen($state) > 50) {
                             return $state;
                         }
+
                         return null;
                     }),
-
-                TextColumn::make('event')
-                    ->label('Evento')
-                    ->sortable()
-                    ->searchable()
-                    ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'created' => 'success',
-                        'updated' => 'warning',
-                        'deleted' => 'danger',
-                        'restored' => 'info',
-                        default => 'gray',
-                    }),
-
-                TextColumn::make('subject_type')
-                    ->label('Tipo do Objeto')
-                    ->sortable()
-                    ->searchable()
-                    ->formatStateUsing(fn (string $state): string => class_basename($state)),
-
-                TextColumn::make('subject_id')
-                    ->label('ID do Objeto')
-                    ->sortable()
-                    ->searchable(),
-
-                TextColumn::make('causer_type')
-                    ->label('Tipo do Usuário')
-                    ->sortable()
-                    ->formatStateUsing(fn (?string $state): string => $state ? class_basename($state) : 'Sistema'),
 
                 TextColumn::make('causer_id')
                     ->label('ID do Usuário')
