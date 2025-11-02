@@ -2,15 +2,21 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, HasRoles, Notifiable;
+
+    const ADMIN_ROLE = 'admin';
+    const VIGIA_ROLE = 'vigia';
+    const SUGRAD_ROLE = 'sugrad';
+    const USER_ROLE = 'user';
+
+    const ROLES = [self::ADMIN_ROLE, self::VIGIA_ROLE, self::SUGRAD_ROLE, self::USER_ROLE];
 
     /**
      * The attributes that are mass assignable.
@@ -19,6 +25,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'username',
         'email',
         'password',
     ];
@@ -44,5 +51,13 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Verify if the user has permission to access the Filament panel.
+     */
+    public function canAccessFilament(): bool
+    {
+        return $this->hasRole(self::ROLES);
     }
 }
