@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\Sessions\Tables;
 
 use Filament\Forms\Components\DatePicker;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
@@ -16,17 +15,17 @@ class SessionsTable
     {
         return $table
             ->columns([
-                TextColumn::make('id')
+                TextColumn::make('session_id')
                     ->label('ID da Sessão')
                     ->searchable()
                     ->limit(8)
-                    ->tooltip(fn ($record) => $record->id),
+                    ->tooltip(fn ($record) => $record->session_id),
 
                 TextColumn::make('user.name')
                     ->label('Usuário')
                     ->searchable()
                     ->sortable()
-                    ->placeholder('Sessão Anônima')
+                    ->placeholder('Usuário Removido')
                     ->icon('heroicon-m-user'),
 
                 TextColumn::make('ip_address')
@@ -55,20 +54,35 @@ class SessionsTable
                         default => 'gray',
                     }),
 
-                IconColumn::make('is_active')
-                    ->label('Ativa')
-                    ->boolean()
-                    ->trueIcon('heroicon-o-check-circle')
-                    ->falseIcon('heroicon-o-x-circle')
-                    ->trueColor('success')
-                    ->falseColor('danger'),
+                TextColumn::make('status')
+                    ->label('Status')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'Ativa' => 'success',
+                        'Logout' => 'info',
+                        'Expirada' => 'warning',
+                        'Logout Forçado' => 'danger',
+                        default => 'gray',
+                    }),
 
-                TextColumn::make('last_activity')
-                    ->label('Última Atividade')
+                TextColumn::make('started_at')
+                    ->label('Início')
                     ->dateTime('d/m/Y H:i:s')
                     ->sortable()
                     ->since()
-                    ->tooltip(fn ($record) => $record->last_activity->format('d/m/Y H:i:s')),
+                    ->tooltip(fn ($record) => $record->started_at->format('d/m/Y H:i:s')),
+
+                TextColumn::make('ended_at')
+                    ->label('Fim')
+                    ->dateTime('d/m/Y H:i:s')
+                    ->sortable()
+                    ->placeholder('Em andamento')
+                    ->since()
+                    ->tooltip(fn ($record) => $record->ended_at?->format('d/m/Y H:i:s')),
+
+                TextColumn::make('duration')
+                    ->label('Duração')
+                    ->placeholder('Em andamento'),
             ])
             ->filters([
                 SelectFilter::make('user_id')
@@ -79,9 +93,9 @@ class SessionsTable
 
                 Filter::make('is_active')
                     ->label('Sessões Ativas')
-                    ->query(fn (Builder $query): Builder => $query->where('last_activity', '>=', now()->subMinutes(config('session.lifetime')))),
+                    ->query(fn (Builder $query): Builder => $query->where('is_active', true)),
 
-                Filter::make('last_activity')
+                Filter::make('started_at')
                     ->form([
                         DatePicker::make('from')
                             ->label('De'),
@@ -92,11 +106,11 @@ class SessionsTable
                         return $query
                             ->when(
                                 $data['from'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('last_activity', '>=', $date),
+                                fn (Builder $query, $date): Builder => $query->whereDate('started_at', '>=', $date),
                             )
                             ->when(
                                 $data['until'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('last_activity', '<=', $date),
+                                fn (Builder $query, $date): Builder => $query->whereDate('started_at', '<=', $date),
                             );
                     }),
 
@@ -107,8 +121,16 @@ class SessionsTable
                         'Tablet' => 'Tablet',
                         'Desktop' => 'Desktop',
                     ]),
+
+                SelectFilter::make('end_reason')
+                    ->label('Motivo do Fim')
+                    ->options([
+                        'logout' => 'Logout',
+                        'timeout' => 'Expirada',
+                        'force_logout' => 'Logout Forçado',
+                        'new_login' => 'Novo Login',
+                    ]),
             ])
-            ->defaultSort('last_activity', 'desc')
-            ->poll('30s');
+            ->defaultSort('started_at', 'desc');
     }
 }

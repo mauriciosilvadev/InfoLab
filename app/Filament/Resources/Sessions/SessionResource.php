@@ -6,22 +6,24 @@ use App\Filament\Resources\Sessions\Pages\ListSessions;
 use App\Filament\Resources\Sessions\Pages\ViewSession;
 use App\Filament\Resources\Sessions\Schemas\SessionInfolist;
 use App\Filament\Resources\Sessions\Tables\SessionsTable;
-use App\Models\Session;
+use App\Models\UserSessionHistory;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 use UnitEnum;
 
 class SessionResource extends Resource
 {
-    protected static ?string $model = Session::class;
+    protected static ?string $model = UserSessionHistory::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-device-phone-mobile';
 
     protected static ?string $recordTitleAttribute = 'id';
 
-    protected static ?string $navigationLabel = 'Sessões';
+    protected static ?string $navigationLabel = 'Histórico de Sessões';
 
     protected static ?string $modelLabel = 'sessão';
 
@@ -42,6 +44,11 @@ class SessionResource extends Resource
     public static function table(Table $table): Table
     {
         return SessionsTable::configure($table);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->where('user_id', Auth::id());
     }
 
     public static function getRelations(): array
@@ -71,6 +78,6 @@ class SessionResource extends Resource
 
     public static function canDelete($record): bool
     {
-        return true;
+        return $record->user_id === Auth::id();
     }
 }

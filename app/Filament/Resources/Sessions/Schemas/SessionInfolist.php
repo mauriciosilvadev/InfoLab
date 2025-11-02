@@ -17,21 +17,45 @@ class SessionInfolist
                     ->schema([
                         Grid::make(2)
                             ->schema([
-                                TextEntry::make('id')
+                                TextEntry::make('session_id')
                                     ->label('ID da Sessão')
                                     ->copyable(),
 
                                 TextEntry::make('user.name')
                                     ->label('Usuário')
-                                    ->placeholder('Sessão Anônima'),
+                                    ->placeholder('Usuário Removido'),
 
                                 TextEntry::make('ip_address')
                                     ->label('Endereço IP')
                                     ->copyable(),
 
-                                TextEntry::make('last_activity')
-                                    ->label('Última Atividade')
+                                TextEntry::make('status')
+                                    ->label('Status da Sessão')
+                                    ->badge(),
+
+                                TextEntry::make('started_at')
+                                    ->label('Início da Sessão')
                                     ->dateTime('d/m/Y H:i:s'),
+
+                                TextEntry::make('ended_at')
+                                    ->label('Fim da Sessão')
+                                    ->dateTime('d/m/Y H:i:s')
+                                    ->placeholder('Em andamento'),
+
+                                TextEntry::make('duration')
+                                    ->label('Duração')
+                                    ->placeholder('Em andamento'),
+
+                                TextEntry::make('end_reason')
+                                    ->label('Motivo do Fim')
+                                    ->formatStateUsing(fn (?string $state): string => match ($state) {
+                                        'logout' => 'Logout',
+                                        'timeout' => 'Expirada',
+                                        'force_logout' => 'Logout Forçado',
+                                        'new_login' => 'Novo Login',
+                                        default => 'N/A',
+                                    })
+                                    ->badge(),
                             ]),
                     ]),
 
@@ -47,10 +71,9 @@ class SessionInfolist
                                     ->label('Tipo de Dispositivo')
                                     ->badge(),
 
-                                TextEntry::make('is_active')
-                                    ->label('Status da Sessão')
-                                    ->formatStateUsing(fn (bool $state): string => $state ? 'Ativa' : 'Inativa')
-                                    ->badge(),
+                                TextEntry::make('location')
+                                    ->label('Localização')
+                                    ->placeholder('Não disponível'),
                             ]),
                     ]),
 
