@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Models\Activity;
 use App\Models\UserSessionHistory;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
@@ -48,7 +49,7 @@ class SessionHistoryListener
                 'is_active' => true,
             ]);
 
-            activity('user')
+            activity(Activity::LOG_TYPE_USER)
                 ->withProperties([
                     'user_id' => $event->user->getAuthIdentifier(),
                     'user_name' => $event->user->name ?? 'N/A',
@@ -58,7 +59,6 @@ class SessionHistoryListener
                     'timestamp' => now()->toISOString(),
                     'login_method' => 'filament_panel',
                 ])
-                ->event('login')
                 ->log("Usuário {$event->user->name} fez login no sistema");
         } catch (\Exception $e) {
             Log::error('Erro ao processar login', [

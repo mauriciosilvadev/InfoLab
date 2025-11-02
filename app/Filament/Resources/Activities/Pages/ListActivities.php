@@ -3,8 +3,9 @@
 namespace App\Filament\Resources\Activities\Pages;
 
 use App\Filament\Resources\Activities\ActivityResource;
-use Filament\Schemas\Components\Tabs\Tab;
+use App\Models\Activity;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Schemas\Components\Tabs\Tab;
 use Illuminate\Database\Eloquent\Builder;
 
 class ListActivities extends ListRecords
@@ -25,28 +26,31 @@ class ListActivities extends ListRecords
 
             'system' => Tab::make('Sistema')
                 ->icon('heroicon-m-cog-6-tooth')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('log_name', 'system'))
-                ->badge(fn () => $this->getModel()::where('log_name', 'system')->count()),
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('log_name', Activity::LOG_TYPE_SYSTEM))
+                ->badge(fn () => $this->getModel()::where('log_name', Activity::LOG_TYPE_SYSTEM)->count()),
 
             'user' => Tab::make('Usuários')
                 ->icon('heroicon-m-users')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('log_name', 'user'))
-                ->badge(fn () => $this->getModel()::where('log_name', 'user')->count()),
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('log_name', Activity::LOG_TYPE_USER))
+                ->badge(fn () => $this->getModel()::where('log_name', Activity::LOG_TYPE_USER)->count()),
 
             'security' => Tab::make('Segurança')
                 ->icon('heroicon-m-shield-check')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('log_name', 'security'))
-                ->badge(fn () => $this->getModel()::where('log_name', 'security')->count()),
-
-            'audit' => Tab::make('Auditoria')
-                ->icon('heroicon-m-clipboard-document-check')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('log_name', 'audit'))
-                ->badge(fn () => $this->getModel()::where('log_name', 'audit')->count()),
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('log_name', Activity::LOG_TYPE_SECURITY))
+                ->badge(fn () => $this->getModel()::where('log_name', Activity::LOG_TYPE_SECURITY)->count()),
 
             'default' => Tab::make('Outros')
                 ->icon('heroicon-m-ellipsis-horizontal')
-                ->modifyQueryUsing(fn (Builder $query) => $query->whereNotIn('log_name', ['system', 'user', 'security', 'audit']))
-                ->badge(fn () => $this->getModel()::whereNotIn('log_name', ['system', 'user', 'security', 'audit'])->count()),
+                ->modifyQueryUsing(fn (Builder $query) => $query->whereNotIn('log_name', [
+                    Activity::LOG_TYPE_SYSTEM,
+                    Activity::LOG_TYPE_USER,
+                    Activity::LOG_TYPE_SECURITY,
+                ]))
+                ->badge(fn () => $this->getModel()::whereNotIn('log_name', [
+                    Activity::LOG_TYPE_SYSTEM,
+                    Activity::LOG_TYPE_USER,
+                    Activity::LOG_TYPE_SECURITY,
+                ])->count()),
         ];
     }
 }

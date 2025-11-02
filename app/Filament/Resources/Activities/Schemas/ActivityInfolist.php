@@ -21,28 +21,11 @@ class ActivityInfolist
                         TextEntry::make('log_name')
                             ->label('Tipo de Log')
                             ->badge()
-                            ->color(fn (string $state): string => match ($state) {
-                                'default' => 'gray',
-                                'user' => 'blue',
-                                'system' => 'green',
-                                'security' => 'red',
-                                default => 'gray',
-                            }),
+                            ->color(fn ($record): string => $record->getLogTypeColor()),
 
                         TextEntry::make('description')
                             ->label('Descrição')
                             ->columnSpanFull(),
-
-                        TextEntry::make('event')
-                            ->label('Evento')
-                            ->badge()
-                            ->color(fn (string $state): string => match ($state) {
-                                'created' => 'success',
-                                'updated' => 'warning',
-                                'deleted' => 'danger',
-                                'restored' => 'info',
-                                default => 'gray',
-                            }),
 
                         TextEntry::make('created_at')
                             ->label('Data/Hora')

@@ -21,13 +21,6 @@ class SessionsTable
                     ->limit(8)
                     ->tooltip(fn ($record) => $record->session_id),
 
-                TextColumn::make('user.name')
-                    ->label('Usuário')
-                    ->searchable()
-                    ->sortable()
-                    ->placeholder('Usuário Removido')
-                    ->icon('heroicon-m-user'),
-
                 TextColumn::make('ip_address')
                     ->label('IP')
                     ->searchable()

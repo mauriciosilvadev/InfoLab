@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Activities\Tables;
 
+use App\Models\Activity;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Columns\TextColumn;
@@ -21,18 +22,10 @@ class ActivitiesTable
                     ->sortable()
                     ->searchable(),
 
-                TextColumn::make('log_name')
-                    ->label('Tipo de Log')
-                    ->sortable()
+                TextColumn::make('causer.name')
+                    ->label('Usuário')
                     ->searchable()
-                    ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'default' => 'gray',
-                        'user' => 'blue',
-                        'system' => 'green',
-                        'security' => 'red',
-                        default => 'gray',
-                    }),
+                    ->sortable(),
 
                 TextColumn::make('description')
                     ->label('Descrição')
@@ -47,47 +40,22 @@ class ActivitiesTable
                         return null;
                     }),
 
-                TextColumn::make('causer_id')
-                    ->label('ID do Usuário')
-                    ->sortable()
-                    ->searchable()
-                    ->placeholder('Sistema'),
-
                 TextColumn::make('created_at')
                     ->label('Data/Hora')
                     ->dateTime('d/m/Y H:i:s')
                     ->sortable()
                     ->toggleable(),
 
-                TextColumn::make('batch_uuid')
-                    ->label('Lote')
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true)
-                    ->limit(8),
             ])
             ->filters([
                 SelectFilter::make('log_name')
                     ->label('Tipo de Log')
-                    ->options([
-                        'default' => 'Padrão',
-                        'user' => 'Usuário',
-                        'system' => 'Sistema',
-                        'security' => 'Segurança',
-                    ]),
-
-                SelectFilter::make('event')
-                    ->label('Evento')
-                    ->options([
-                        'created' => 'Criado',
-                        'updated' => 'Atualizado',
-                        'deleted' => 'Excluído',
-                        'restored' => 'Restaurado',
-                    ]),
+                    ->options(Activity::getLogTypes()),
 
                 SelectFilter::make('subject_type')
                     ->label('Tipo do Objeto')
                     ->options(function () {
-                        return \Spatie\Activitylog\Models\Activity::query()
+                        return Activity::query()
                             ->distinct()
                             ->whereNotNull('subject_type')
                             ->pluck('subject_type')

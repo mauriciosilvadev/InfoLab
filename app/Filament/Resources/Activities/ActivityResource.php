@@ -6,11 +6,11 @@ use App\Filament\Resources\Activities\Pages\ListActivities;
 use App\Filament\Resources\Activities\Pages\ViewActivity;
 use App\Filament\Resources\Activities\Schemas\ActivityInfolist;
 use App\Filament\Resources\Activities\Tables\ActivitiesTable;
+use App\Models\Activity;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
-use Spatie\Activitylog\Models\Activity;
 
 class ActivityResource extends Resource
 {
@@ -40,9 +40,7 @@ class ActivityResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
