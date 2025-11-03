@@ -4,11 +4,9 @@
 
 _Gestão Inteligente, Transformando a UFES Digitalmente_
 
-[![Last Commit](https://img.shields.io/github/last-commit/USERNAME/infolab?color=0ea5e9&label=last%20commit&logo=git&logoColor=white&style=flat-square)](https://github.com/USERNAME/infolab)
+[![Last Commit](https://img.shields.io/github/last-commit/mauriciosilvadev/infolab?color=0ea5e9&label=last%20commit&logo=git&logoColor=white&style=flat-square)](https://github.com/mauriciosilvadev/infolab)
 ![PHP](https://img.shields.io/badge/php-57.7%25-777BB4?logo=php&logoColor=white&style=flat-square)
 ![Languages](https://img.shields.io/badge/languages-5-0ea5e9?style=flat-square)
-
-> **Nota:** Substitua `USERNAME` pelo seu nome de usuário ou organização do GitHub para que o badge de último commit funcione corretamente.
 
 _Desenvolvido com as ferramentas e tecnologias:_
 
