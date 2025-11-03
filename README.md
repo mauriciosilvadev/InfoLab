@@ -1,12 +1,42 @@
-# 🚀 InfoLab - Sistema de Gestão UFES
+<div align="center">
+
+# **INFOLAB**
+
+_Empowering Innovation, Accelerating Digital Transformation Now_
+
+[![Last Commit](https://img.shields.io/github/last-commit/USERNAME/infolab?color=0ea5e9&label=last%20commit&logo=git&logoColor=white&style=flat-square)](https://github.com/USERNAME/infolab)
+![PHP](https://img.shields.io/badge/php-57.7%25-777BB4?logo=php&logoColor=white&style=flat-square)
+![Languages](https://img.shields.io/badge/languages-5-0ea5e9?style=flat-square)
+
+_Built with the tools and technologies:_
+
+![JSON](https://img.shields.io/badge/JSON-000000?style=flat-square&logo=json&logoColor=white)
+![Markdown](https://img.shields.io/badge/Markdown-000000?style=flat-square&logo=markdown&logoColor=white)
+![npm](https://img.shields.io/badge/npm-CB3837?style=flat-square&logo=npm&logoColor=white)
+![Laravel](https://img.shields.io/badge/Laravel-FF2D20?style=flat-square&logo=laravel&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white)
+![Composer](https://img.shields.io/badge/Composer-885630?style=flat-square&logo=composer&logoColor=white)
+
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)
+![XML](https://img.shields.io/badge/XML-000000?style=flat-square&logo=xml&logoColor=white)
+![PHP](https://img.shields.io/badge/PHP-777BB4?style=flat-square&logo=php&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white)
+![Axios](https://img.shields.io/badge/Axios-5A29E4?style=flat-square&logo=axios&logoColor=white)
+
+</div>
+
+---
+
+## 📋 Sobre o Projeto
 
 Sistema de gestão desenvolvido com Laravel 11, Filament Admin Panel, PostgreSQL e Redis, totalmente containerizado com Laravel Sail.
 
 ## 📋 Pré-requisitos
 
-- **Docker** (versão 20.10 ou superior)
-- **Docker Compose** (versão 2.0 ou superior)
-- **Git**
+-   **Docker** (versão 20.10 ou superior)
+-   **Docker Compose** (versão 2.0 ou superior)
+-   **Git**
 
 ### Instalação do Docker (Ubuntu/Debian)
 
@@ -45,29 +75,31 @@ cd infolab
 ```
 
 **Pronto!** O projeto estará rodando em:
-- **Aplicação**: http://localhost
-- **Admin Panel**: http://localhost/admin
-- **Adminer**: http://localhost:8080
+
+-   **Aplicação**: http://localhost
+-   **Admin Panel**: http://localhost/admin
+-   **Adminer**: http://localhost:8080
 
 ## 🌐 Acessos
 
-| Serviço | URL | Descrição |
-|---------|-----|-----------|
-| **Aplicação Principal** | http://localhost | Site principal |
-| **Painel Administrativo** | http://localhost/admin | Filament Admin Panel |
-| **Adminer** | http://localhost:8080 | Interface do banco de dados |
+| Serviço                   | URL                    | Descrição                   |
+| ------------------------- | ---------------------- | --------------------------- |
+| **Aplicação Principal**   | http://localhost       | Site principal              |
+| **Painel Administrativo** | http://localhost/admin | Filament Admin Panel        |
+| **Adminer**               | http://localhost:8080  | Interface do banco de dados |
 
 ### Credenciais do Banco (Adminer)
 
-- **Sistema**: PostgreSQL
-- **Servidor**: pgsql
-- **Usuário**: sail
-- **Senha**: password
-- **Base de dados**: infolab
+-   **Sistema**: PostgreSQL
+-   **Servidor**: pgsql
+-   **Usuário**: sail
+-   **Senha**: password
+-   **Base de dados**: infolab
 
 ## 🔧 Comandos Úteis
 
 ### Gerenciamento dos Containers
+
 ```bash
 # Iniciar containers
 ./vendor/bin/sail up -d
@@ -86,6 +118,7 @@ cd infolab
 ```
 
 ### Laravel
+
 ```bash
 # Executar comandos Artisan
 ./vendor/bin/sail artisan <comando>
@@ -104,6 +137,7 @@ cd infolab
 ```
 
 ### Filament
+
 ```bash
 # Criar usuário admin
 ./vendor/bin/sail artisan make:filament-user
@@ -113,6 +147,7 @@ cd infolab
 ```
 
 ### Desenvolvimento
+
 ```bash
 # Acessar container da aplicação
 ./vendor/bin/sail shell
@@ -134,6 +169,7 @@ cd infolab
 ```
 
 ### Alias para Facilitar (Opcional)
+
 ```bash
 # Adicionar ao ~/.bashrc ou ~/.zshrc
 alias sail='./vendor/bin/sail'
@@ -166,6 +202,7 @@ infolab/
 ## 🐛 Solução de Problemas
 
 ### Container não inicia
+
 ```bash
 # Verificar logs
 ./vendor/bin/sail logs
@@ -176,6 +213,7 @@ infolab/
 ```
 
 ### Erro de permissão
+
 ```bash
 # Corrigir permissões do Laravel
 ./vendor/bin/sail shell
@@ -184,6 +222,7 @@ chown -R sail:sail /var/www/html/bootstrap/cache
 ```
 
 ### Banco de dados não conecta
+
 ```bash
 # Verificar se o container do banco está rodando
 ./vendor/bin/sail ps
@@ -197,6 +236,7 @@ chown -R sail:sail /var/www/html/bootstrap/cache
 ```
 
 ### Limpar tudo e recomeçar
+
 ```bash
 # Parar e remover containers, redes e volumes
 ./vendor/bin/sail down -v
@@ -207,6 +247,7 @@ chown -R sail:sail /var/www/html/bootstrap/cache
 ```
 
 ### Porta já em uso
+
 ```bash
 # Verificar o que está usando a porta
 sudo lsof -i :80
@@ -219,11 +260,11 @@ sudo docker rm $(sudo docker ps -aq)
 
 ## 📝 Tecnologias Utilizadas
 
-- **Laravel 11** - Framework PHP
-- **Filament 4** - Admin Panel
-- **PostgreSQL 15** - Banco de dados
-- **Redis 7** - Cache e sessões
-- **Laravel Sail** - Ambiente de desenvolvimento Docker
+-   **Laravel 11** - Framework PHP
+-   **Filament 4** - Admin Panel
+-   **PostgreSQL 15** - Banco de dados
+-   **Redis 7** - Cache e sessões
+-   **Laravel Sail** - Ambiente de desenvolvimento Docker
 
 ## 📞 Suporte
 

@@ -23,6 +23,12 @@ class UsersTable
                     ->searchable()
                     ->sortable()
                     ->copyable(),
+                TextColumn::make('roles.name')
+                    ->label('Perfil')
+                    ->searchable()
+                    ->sortable()
+                    ->badge()
+                    ->color(fn ($state) => $state ? 'success' : 'warning'),
                 TextColumn::make('email_verified_at')
                     ->label('E-mail Verificado')
                     ->dateTime('d/m/Y H:i')
