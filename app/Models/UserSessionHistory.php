@@ -36,18 +36,54 @@ class UserSessionHistory extends Model
 
     public function getDurationAttribute(): ?string
     {
-        if (!$this->ended_at) {
+        if (! $this->ended_at) {
             return null;
         }
 
         $duration = $this->started_at->diff($this->ended_at);
-        
+
         if ($duration->days > 0) {
             return $duration->format('%d dias, %h horas e %i minutos');
         } elseif ($duration->h > 0) {
             return $duration->format('%h horas e %i minutos');
         } else {
             return $duration->format('%i minutos');
+        }
+    }
+
+    public function getStartedAtFormattedAttribute(): string
+    {
+        $now = now();
+        $diff = $this->started_at->diff($now);
+
+        if ($diff->days > 7) {
+            return $this->started_at->format('d/m/Y H:i');
+        } elseif ($diff->days > 0) {
+            return $this->started_at->format('d/m H:i');
+        } elseif ($diff->h > 0) {
+            return $this->started_at->format('H:i');
+        } else {
+            return $this->started_at->format('H:i:s');
+        }
+    }
+
+    public function getEndedAtFormattedAttribute(): ?string
+    {
+        if (! $this->ended_at) {
+            return null;
+        }
+
+        $now = now();
+        $diff = $this->ended_at->diff($now);
+
+        if ($diff->days > 7) {
+            return $this->ended_at->format('d/m/Y H:i');
+        } elseif ($diff->days > 0) {
+            return $this->ended_at->format('d/m H:i');
+        } elseif ($diff->h > 0) {
+            return $this->ended_at->format('H:i');
+        } else {
+            return $this->ended_at->format('H:i:s');
         }
     }
 

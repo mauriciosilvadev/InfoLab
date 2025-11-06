@@ -29,23 +29,10 @@ class UsersTable
                     ->sortable()
                     ->badge()
                     ->color(fn ($state) => $state ? 'success' : 'warning'),
-                TextColumn::make('email_verified_at')
-                    ->label('E-mail Verificado')
-                    ->dateTime('d/m/Y H:i')
-                    ->sortable()
-                    ->placeholder('Não verificado')
-                    ->badge()
-                    ->color(fn ($state) => $state ? 'success' : 'warning'),
                 TextColumn::make('created_at')
                     ->label('Criado em')
                     ->dateTime('d/m/Y H:i')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->label('Atualizado em')
-                    ->dateTime('d/m/Y H:i')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
             ])
             ->filters([
                 //

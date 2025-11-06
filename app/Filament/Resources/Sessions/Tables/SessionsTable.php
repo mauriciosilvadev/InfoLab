@@ -58,19 +58,21 @@ class SessionsTable
                         default => 'gray',
                     }),
 
-                TextColumn::make('started_at')
+                TextColumn::make('started_at_formatted')
                     ->label('Início')
-                    ->dateTime('d/m/Y H:i:s')
-                    ->sortable()
-                    ->since()
+                    ->sortable(
+                        query: fn (Builder $query, string $direction): Builder => $query->orderBy('started_at', $direction)
+                    )
+                    ->formatStateUsing(fn ($record) => $record->started_at_formatted)
                     ->tooltip(fn ($record) => $record->started_at->format('d/m/Y H:i:s')),
 
-                TextColumn::make('ended_at')
+                TextColumn::make('ended_at_formatted')
                     ->label('Fim')
-                    ->dateTime('d/m/Y H:i:s')
-                    ->sortable()
+                    ->sortable(
+                        query: fn (Builder $query, string $direction): Builder => $query->orderBy('ended_at', $direction)
+                    )
+                    ->formatStateUsing(fn ($record) => $record->ended_at_formatted ?? 'Em andamento')
                     ->placeholder('Em andamento')
-                    ->since()
                     ->tooltip(fn ($record) => $record->ended_at?->format('d/m/Y H:i:s')),
 
                 TextColumn::make('duration')
