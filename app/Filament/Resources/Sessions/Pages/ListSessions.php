@@ -18,9 +18,4 @@ class ListSessions extends ListRecords
     {
         return 'Sessões Ativas';
     }
-
-    public function getSubheading(): ?string
-    {
-        return 'Monitore e gerencie as sessões dos usuários em tempo real';
-    }
 }
