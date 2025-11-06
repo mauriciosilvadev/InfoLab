@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
@@ -59,5 +60,13 @@ class User extends Authenticatable
     public function canAccessFilament(): bool
     {
         return $this->hasRole(self::ROLES);
+    }
+
+    /**
+     * Get the session history for the user.
+     */
+    public function sessionHistory(): HasMany
+    {
+        return $this->hasMany(UserSessionHistory::class);
     }
 }

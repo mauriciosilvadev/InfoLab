@@ -2,10 +2,13 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
+use App\Models\User;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Spatie\Permission\Models\Role;
 
 class UserForm
 {
@@ -14,23 +17,42 @@ class UserForm
         return $schema
             ->components([
                 Section::make('Informações do Usuário')
-                    ->description('Dados básicos do usuário')
                     ->schema([
                         TextInput::make('name')
                             ->label('Nome')
                             ->required()
+                            ->disabled()
                             ->maxLength(255),
                         TextInput::make('email')
                             ->label('E-mail')
                             ->email()
                             ->required()
+                            ->disabled()
                             ->unique(ignoreRecord: true)
                             ->maxLength(255),
                         DateTimePicker::make('email_verified_at')
                             ->label('E-mail Verificado em')
                             ->displayFormat('d/m/Y H:i')
-                            ->helperText('Deixe em branco se o e-mail não foi verificado'),
-                    ]),
+                            ->disabled(),
+                        Select::make('roles')
+                            ->label('Função')
+                            ->required()
+                            ->preload()
+                            ->options(function () {
+                                return Role::whereIn('name', User::ROLES)
+                                    ->pluck('name', 'id');
+                            })
+                            ->default(function ($record) {
+                                return $record?->roles()->first()?->id;
+                            })
+                            ->afterStateHydrated(function ($component, $state, $record) {
+                                if ($record && ! $state) {
+                                    $component->state($record->roles()->first()?->id);
+                                }
+                            })
+                            ->helperText('Selecione a função do usuário'),
+                    ])
+                    ->columns(2),
             ]);
     }
 }

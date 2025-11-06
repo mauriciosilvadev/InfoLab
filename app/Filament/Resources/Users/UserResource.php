@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Users;
 
 use App\Filament\Resources\Users\Pages\EditUser;
 use App\Filament\Resources\Users\Pages\ListUsers;
+use App\Filament\Resources\Users\RelationManagers\SessionHistoryRelationManager;
 use App\Filament\Resources\Users\Schemas\UserForm;
 use App\Filament\Resources\Users\Tables\UsersTable;
 use App\Models\User;
@@ -30,7 +31,7 @@ class UserResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return UserForm::configure($schema);
+        return UserForm::configure($schema)->columns(1);
     }
 
     public static function table(Table $table): Table
@@ -41,7 +42,7 @@ class UserResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            SessionHistoryRelationManager::class,
         ];
     }
 

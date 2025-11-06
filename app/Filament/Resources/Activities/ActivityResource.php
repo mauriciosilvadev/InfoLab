@@ -11,6 +11,7 @@ use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class ActivityResource extends Resource
 {
@@ -31,6 +32,11 @@ class ActivityResource extends Resource
     public static function infolist(Schema $schema): Schema
     {
         return ActivityInfolist::configure($schema);
+    }
+
+    public static function getNavigationGroup(): string|UnitEnum|null
+    {
+        return 'Segurança';
     }
 
     public static function table(Table $table): Table
