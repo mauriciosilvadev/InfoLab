@@ -34,7 +34,7 @@ class ActivityPolicy
     /**
      * Determine whether the activity can update the model.
      */
-    public function update(User $user, User $model): bool
+    public function update(User $user, Activity $model): bool
     {
         return $user->hasRole([User::ADMIN_ROLE]);
     }
@@ -42,7 +42,7 @@ class ActivityPolicy
     /**
      * Determine whether the activity can delete the model.
      */
-    public function delete(User $user, User $model): bool
+    public function delete(User $user, Activity $model): bool
     {
         return $user->hasRole([User::ADMIN_ROLE]);
     }
@@ -50,7 +50,7 @@ class ActivityPolicy
     /**
      * Determine whether the activity can restore the model.
      */
-    public function restore(User $user, User $model): bool
+    public function restore(User $user, Activity $model): bool
     {
         return $user->hasRole([User::ADMIN_ROLE]);
     }
@@ -58,7 +58,7 @@ class ActivityPolicy
     /**
      * Determine whether the activity can permanently delete the model.
      */
-    public function forceDelete(User $user, User $model): bool
+    public function forceDelete(User $user, Activity $model): bool
     {
         return $user->hasRole([User::ADMIN_ROLE]);
     }
