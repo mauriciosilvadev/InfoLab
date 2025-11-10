@@ -1,7 +1,7 @@
 <?php
 
+use App\Http\Controllers\PublicSite\HomeController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', HomeController::class)->name('public.home');
+Route::view('/contato', 'public.contact')->name('public.contact');
