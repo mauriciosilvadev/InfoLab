@@ -1,7 +1,7 @@
 @extends('layouts.public')
 
 @section('content')
-    <section class="bg-gradient-to-b from-slate-900 to-slate-800 py-20 text-white">
+    <section class="bg-slate-900 py-20 text-white">
         <div class="mx-auto max-w-4xl px-6 text-center">
             <h1 class="text-4xl font-semibold leading-tight lg:text-5xl">
                 Fale com a equipe do Infolab

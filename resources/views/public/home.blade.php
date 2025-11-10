@@ -1,7 +1,7 @@
 @extends('layouts.public')
 
 @section('content')
-    <section class="bg-gradient-to-b from-white to-slate-100 py-20">
+    <section class="bg-white py-20">
         <div class="mx-auto flex max-w-6xl flex-col gap-12 px-6 lg:flex-row lg:items-center">
             <div class="flex-1 space-y-6">
                 <span class="inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-widest text-slate-500">
@@ -69,7 +69,62 @@
             @else
                 <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                     @foreach ($laboratories as $laboratory)
-                        <article class="flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                        @php
+                            $galleryPhotos = collect($laboratory->gallery_photo_urls ?? []);
+                            $galleryId = \Illuminate\Support\Str::uuid()->toString();
+                            $initialPhoto = $laboratory->cover_photo_url ?? $galleryPhotos->first();
+                        @endphp
+                        <article class="flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+                            <div class="relative aspect-4/3 w-full bg-slate-100" data-gallery-root="{{ $galleryId }}">
+                                @if ($initialPhoto)
+                                    <img
+                                        src="{{ $initialPhoto }}"
+                                        alt="Foto do laboratório {{ $laboratory->name }}"
+                                        class="h-full w-full object-cover"
+                                        data-gallery-main
+                                        loading="lazy"
+                                    >
+                                @else
+                                    <div class="flex h-full w-full items-center justify-center bg-slate-200 text-slate-500" data-gallery-placeholder>
+                                        <span class="text-sm font-medium uppercase tracking-widest">
+                                            Foto indisponível
+                                        </span>
+                                    </div>
+                                @endif
+
+                                <div class="absolute left-4 top-4 rounded-full bg-white/85 px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm backdrop-blur">
+                                    {{ $galleryPhotos->count() }} {{ \Illuminate\Support\Str::plural('foto', $galleryPhotos->count()) }}
+                                </div>
+                            </div>
+
+                            @if ($galleryPhotos->count() > 0)
+                                <div class="flex items-center gap-2 overflow-x-auto px-6 pb-4 pt-4">
+                                    @foreach ($galleryPhotos->take(7) as $thumbUrl)
+                                        <button
+                                            type="button"
+                                            class="group relative h-16 w-24 shrink-0 overflow-hidden rounded-lg border transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900"
+                                            data-gallery-thumb
+                                            data-gallery-id="{{ $galleryId }}"
+                                            data-src="{{ $thumbUrl }}"
+                                            data-alt="Foto do laboratório {{ $laboratory->name }}"
+                                            aria-pressed="{{ $thumbUrl === $initialPhoto ? 'true' : 'false' }}"
+                                            @class([
+                                                'ring-2 ring-slate-900 border-slate-900' => $thumbUrl === $initialPhoto,
+                                                'border-slate-200 hover:border-slate-400' => $thumbUrl !== $initialPhoto,
+                                            ])
+                                        >
+                                            <img
+                                                src="{{ $thumbUrl }}"
+                                                alt="Miniatura do laboratório {{ $laboratory->name }}"
+                                                class="h-full w-full object-cover transition group-hover:scale-105"
+                                                loading="lazy"
+                                            >
+                                        </button>
+                                    @endforeach
+                                </div>
+                            @endif
+
+                            <div class="flex flex-1 flex-col gap-4 px-6 pb-6 pt-4">
                             <header class="mb-4">
                                 <h3 class="text-xl font-semibold text-slate-900">
                                     {{ $laboratory->name }}
@@ -108,6 +163,7 @@
                                     </dd>
                                 </div>
                             </dl>
+                            </div>
                         </article>
                     @endforeach
                 </div>
@@ -115,4 +171,46 @@
         </div>
     </section>
 @endsection
+
+@once
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                document.querySelectorAll('[data-gallery-root]').forEach(root => {
+                    const galleryId = root.dataset.galleryRoot;
+                    const mainImage = root.querySelector('[data-gallery-main]');
+                    const placeholder = root.querySelector('[data-gallery-placeholder]');
+
+                    document.querySelectorAll(`[data-gallery-thumb][data-gallery-id="${galleryId}"]`).forEach(button => {
+                        button.addEventListener('click', () => {
+                            const src = button.dataset.src;
+                            const alt = button.dataset.alt ?? '';
+
+                            if (mainImage) {
+                                mainImage.src = src;
+                                mainImage.alt = alt;
+                                mainImage.classList.remove('hidden');
+                            }
+
+                            if (placeholder) {
+                                placeholder.classList.add('hidden');
+                            }
+
+                            document.querySelectorAll(`[data-gallery-thumb][data-gallery-id="${galleryId}"]`).forEach(btn => {
+                                btn.classList.remove('ring-2', 'ring-slate-900', 'border-slate-900');
+                                btn.classList.remove('border-slate-200', 'hover:border-slate-400');
+                                btn.classList.add('border-slate-200', 'hover:border-slate-400');
+                                btn.setAttribute('aria-pressed', 'false');
+                            });
+
+                            button.classList.remove('border-slate-200', 'hover:border-slate-400');
+                            button.classList.add('ring-2', 'ring-slate-900', 'border-slate-900');
+                            button.setAttribute('aria-pressed', 'true');
+                        });
+                    });
+                });
+            });
+        </script>
+    @endpush
+@endonce
 

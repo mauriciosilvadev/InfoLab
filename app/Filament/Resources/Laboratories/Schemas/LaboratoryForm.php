@@ -35,6 +35,8 @@ class LaboratoryForm
                             ->image()
                             ->multiple()
                             ->reorderable()
+                            ->disk('public')
+                            ->visibility('public')
                             ->directory('laboratories/photos')
                             ->maxFiles(10)
                             ->imagePreviewHeight('150')
