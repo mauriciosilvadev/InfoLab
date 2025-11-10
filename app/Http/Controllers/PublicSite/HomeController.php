@@ -11,6 +11,7 @@ class HomeController extends Controller
 {
     public function __invoke(): View
     {
+        /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
         $disk = Storage::disk('public');
 
         $localDisk = Storage::disk('local');
