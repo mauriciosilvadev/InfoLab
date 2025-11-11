@@ -2,7 +2,10 @@
 
 namespace App\Filament\Pages\Auth;
 
-use App\Models\User;
+use App\Exceptions\Auth\DirectoryAuthenticationException;
+use App\Services\Auth\LdapAuthenticator;
+use App\Services\Auth\SystemAccountAuthenticator;
+use App\Services\Auth\UserSynchronizer;
 use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
 use Filament\Auth\Http\Responses\Contracts\LoginResponse;
 use Filament\Auth\MultiFactor\Contracts\HasBeforeChallengeHook;
@@ -54,28 +57,52 @@ class Login extends BaseLogin
         /** @var SessionGuard $authGuard */
         $authGuard = Filament::auth();
 
-        $authProvider = $authGuard->getProvider(); /** @phpstan-ignore-line */
         $credentials = $this->getCredentialsFromFormData($data);
+        $systemAccountAuthenticator = app(SystemAccountAuthenticator::class);
+        $directoryAuthenticator = app(LdapAuthenticator::class);
+        $userSynchronizer = app(UserSynchronizer::class);
 
-        $userByUsername = User::where('username', $credentials['username'])->first();
+        $user = null;
+        $systemUser = $systemAccountAuthenticator->find($credentials['username']);
 
-        if (! $userByUsername) {
-            $this->userUndertakingMultiFactorAuthentication = null;
-            $this->fireFailedEvent($authGuard, null, $credentials);
-            throw ValidationException::withMessages([
-                'data.username' => 'Nome de usuário inválido',
-            ]);
+        if ($systemUser) {
+            if (! $systemAccountAuthenticator->verifyPassword($systemUser, $credentials['password'])) {
+                $this->userUndertakingMultiFactorAuthentication = null;
+                $this->fireFailedEvent($authGuard, $systemUser, $credentials);
+
+                throw ValidationException::withMessages([
+                    'data.password' => 'Senha inválida',
+                ]);
+            }
+
+            $user = $systemUser;
+        } else {
+            try {
+                $directoryUser = $directoryAuthenticator->authenticate($credentials['username'], $credentials['password']);
+            } catch (DirectoryAuthenticationException $exception) {
+                $this->userUndertakingMultiFactorAuthentication = null;
+                $this->fireFailedEvent($authGuard, null, $credentials);
+
+                $field = match ($exception->reason) {
+                    'invalid_credentials' => 'data.password',
+                    'user_not_found' => 'data.username',
+                    default => 'data.username',
+                };
+
+                throw ValidationException::withMessages([
+                    $field => $exception->getMessage(),
+                ]);
+            }
+
+            $user = $userSynchronizer->sync($directoryUser);
         }
 
-        $user = $authProvider->retrieveByCredentials($credentials);
-
-        if ((! $user) || (! $authProvider->validateCredentials($user, $credentials))) {
-            $this->userUndertakingMultiFactorAuthentication = null;
-
+        if (
+            $user instanceof FilamentUser &&
+            ! $user->canAccessPanel(Filament::getCurrentOrDefaultPanel())
+        ) {
             $this->fireFailedEvent($authGuard, $user, $credentials);
-            throw ValidationException::withMessages([
-                'data.password' => 'Senha inválida',
-            ]);
+            $this->throwFailureValidationException();
         }
 
         if (
@@ -105,16 +132,7 @@ class Login extends BaseLogin
             }
         }
 
-        if (! $authGuard->attemptWhen($credentials, function (Authenticatable $user): bool {
-            if (! ($user instanceof FilamentUser)) {
-                return true;
-            }
-
-            return $user->canAccessPanel(Filament::getCurrentOrDefaultPanel());
-        }, $data['remember'] ?? false)) {
-            $this->fireFailedEvent($authGuard, $user, $credentials);
-            $this->throwFailureValidationException();
-        }
+        $authGuard->login($user, $data['remember'] ?? false);
 
         session()->regenerate();
 
