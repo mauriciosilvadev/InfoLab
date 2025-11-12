@@ -4,14 +4,24 @@ namespace App\Filament\Widgets;
 
 use App\Filament\Resources\Activities\ActivityResource;
 use App\Models\Activity;
+use App\Models\User;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
+use Illuminate\Support\Facades\Auth;
 
 class RecentActivitiesWidget extends TableWidget
 {
     protected static ?string $heading = 'Auditorias Recentes';
+
+    public static function canView(): bool
+    {
+        /** @var User|null $user */
+        $user = Auth::user();
+
+        return $user !== null && $user->hasRole([User::ADMIN_ROLE]);
+    }
 
     protected int|string|array $columnSpan = [
         'md' => 2,

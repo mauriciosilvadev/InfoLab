@@ -21,6 +21,10 @@ class SystemAccountAuthenticator
 
     public function find(string $username): ?User
     {
+        if (! in_array($username, $this->privilegedRoles())) {
+            return null;
+        }
+
         $user = User::query()->where('username', $username)->first();
 
         if (! $user) {

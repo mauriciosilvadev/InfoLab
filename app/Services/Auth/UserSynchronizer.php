@@ -35,7 +35,7 @@ class UserSynchronizer
             return $user;
         }
 
-        return User::create([
+        $user = User::create([
             'username' => $directoryUser['username'],
             'name' => $directoryUser['name'] ?? $directoryUser['username'],
             'email' => $directoryUser['email'] ?? null,
@@ -45,5 +45,9 @@ class UserSynchronizer
             'password' => Str::random(32),
             'email_verified_at' => $now,
         ]);
+
+        $user->assignRole(User::USER_ROLE);
+
+        return $user;
     }
 }
