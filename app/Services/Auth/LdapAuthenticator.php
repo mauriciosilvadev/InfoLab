@@ -34,7 +34,16 @@ class LdapAuthenticator
     }
 
     /**
-     * @return array{username:string,name:?string,email:?string,raw:array<string,mixed>}
+     * @return array{
+     *     username:string,
+     *     name:?string,
+     *     email:?string,
+     *     alternative_email:?string,
+     *     cpf:?string,
+     *     matricula:?string,
+     *     status:?string,
+     *     raw:array<string,mixed>
+     * }
      */
     public function authenticate(string $username, #[\SensitiveParameter] string $password): array
     {
@@ -53,7 +62,17 @@ class LdapAuthenticator
                 $connection,
                 $userDn,
                 $this->buildUserFilter($username),
-                ['displayName', 'cn', 'givenName', 'sn', 'mail'],
+                [
+                    'displayName',
+                    'cn',
+                    'givenName',
+                    'sn',
+                    'mail',
+                    'mailForwardingAddress',
+                    'brPersonCPF',
+                    'matGrad',
+                    'eduPersonScopedAffiliation',
+                ],
             );
 
             if ($search === false) {
@@ -150,7 +169,16 @@ class LdapAuthenticator
 
     /**
      * @param  array<string, mixed>  $entry
-     * @return array{username:string,name:?string,email:?string,raw:array<string,mixed>}
+     * @return array{
+     *     username:string,
+     *     name:?string,
+     *     email:?string,
+     *     alternative_email:?string,
+     *     cpf:?string,
+     *     matricula:?string,
+     *     status:?string,
+     *     raw:array<string,mixed>
+     * }
      */
     private function mapEntryToUserData(string $username, array $entry): array
     {
@@ -160,11 +188,19 @@ class LdapAuthenticator
             ?: null;
 
         $email = $entry['mail'][0] ?? null;
+        $alternativeEmail = $entry['mailforwardingaddress'][0] ?? null;
+        $cpf = $entry['brpersoncpf'][0] ?? null;
+        $matricula = $entry['matgrad'][0] ?? null;
+        $status = $entry['edupersonscopedaffiliation'][0] ?? null;
 
         return [
             'username' => $username,
             'name' => $name,
             'email' => $email,
+            'alternative_email' => $alternativeEmail,
+            'cpf' => $cpf,
+            'matricula' => $matricula,
+            'status' => $status,
             'raw' => $entry,
         ];
     }

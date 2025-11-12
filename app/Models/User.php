@@ -28,6 +28,9 @@ class User extends Authenticatable
         'name',
         'username',
         'email',
+        'alternative_email',
+        'cpf',
+        'matricula',
         'password',
         'email_verified_at',
     ];
