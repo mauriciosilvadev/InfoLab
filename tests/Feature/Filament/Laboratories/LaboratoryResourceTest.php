@@ -20,6 +20,16 @@ class LaboratoryResourceTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function createFilamentUser(): User
+    {
+        $user = User::factory()->create();
+
+        $role = Role::firstOrCreate(['name' => User::ADMIN_ROLE, 'guard_name' => 'web']);
+        $user->assignRole($role);
+
+        return $user;
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -137,13 +147,22 @@ class LaboratoryResourceTest extends TestCase
         $this->assertNotNull(Activity::query()->where('description', 'like', '%editou o laboratório%')->first());
     }
 
-    protected function createFilamentUser(): User
+    public function test_can_delete_laboratory_from_list_page(): void
     {
-        $user = User::factory()->create();
+        $this->actingAs($this->createFilamentUser());
 
-        $role = Role::firstOrCreate(['name' => User::ADMIN_ROLE, 'guard_name' => 'web']);
-        $user->assignRole($role);
+        $laboratory = Laboratory::factory()->create([
+            'name' => 'Laboratório de Testes',
+            'building' => 'Prédio 3',
+        ]);
 
-        return $user;
+        Livewire::test(ListLaboratories::class)
+            ->assertOk()
+            ->callTableAction('delete', $laboratory)
+            ->assertNotified();
+
+        $this->assertDatabaseMissing(Laboratory::class, [
+            'id' => $laboratory->id,
+        ]);
     }
 }
