@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Collection;
 use Spatie\Activitylog\Models\Activity as SpatieActivity;
 
 class Activity extends SpatieActivity
@@ -97,5 +98,29 @@ class Activity extends SpatieActivity
     public function getEventNameAttribute(): string
     {
         return self::getEvents()[$this->event] ?? $this->event;
+    }
+
+    /**
+     * Accessor to get formatted properties for display.
+     */
+    public function getFormattedPropertiesAttribute(): array
+    {
+        $properties = $this->properties;
+
+        if ($properties instanceof Collection) {
+            $properties = $properties->toArray();
+        }
+
+        if (! is_array($properties)) {
+            return [];
+        }
+
+        return array_map(function ($value) {
+            if (is_array($value) || is_object($value)) {
+                return json_encode($value, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            }
+
+            return $value;
+        }, $properties);
     }
 }

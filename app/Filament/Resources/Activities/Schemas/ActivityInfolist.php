@@ -39,7 +39,7 @@ class ActivityInfolist
 
                 Section::make('Propriedades')
                     ->schema([
-                        KeyValueEntry::make('properties')
+                        KeyValueEntry::make('formatted_properties')
                             ->label('Dados Adicionais')
                             ->columnSpanFull()
                             ->keyLabel('Propriedade')

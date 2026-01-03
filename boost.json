@@ -1,5 +1,13 @@
 {
     "agents": ["claude_code", "codex", "copilot", "cursor", "phpstorm"],
     "editors": ["vscode"],
-    "guidelines": []
+    "guidelines": [
+        ".cursor/core.md",
+        ".cursor/concise.md",
+        ".cursor/request.md",
+        ".cursor/refresh.md",
+        ".cursor/retro.md",
+        ".cursor/no-absolute-right.md",
+        ".cursorrules"
+    ]
 }

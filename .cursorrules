@@ -1,0 +1,49 @@
+# Cursor Rules - INFOLAB Project
+
+This file ensures all operational guidelines are loaded. All rules in `.cursor/` directory must be followed.
+
+## Core Operating Guidelines
+
+**MANDATORY:** Read and apply ALL rules from:
+
+-   `.cursor/core.md` - Senior Software Engineer Operating Guidelines (v4.7)
+-   `.cursor/concise.md` - Radical Conciseness Protocol
+-   `.cursor/request.md` - Standard Operating Protocol for requests
+-   `.cursor/refresh.md` - Root Cause Analysis Protocol for persistent bugs
+-   `.cursor/retro.md` - Retrospective & Doctrine Evolution Protocol
+-   `.cursor/no-absolute-right.md` - Communication Guidelines (avoid sycophantic language)
+
+## Project-Specific Rules
+
+-   **Laravel Commands:** Always use `sol` (not `php`) for commands
+-   **MCP:** Always check if MCP is active before starting; if not accessible, ask user: "Do you want to activate MCP before we begin?"
+-   **Language:** Always respond in Portuguese. For commits, write in English.
+
+## Quick Reference
+
+**Core Principles:**
+
+1. Research First - 8-step protocol before changes
+2. Explore Before Conclude - Exhaust all search methods
+3. Smart Searching - Bounded, specific searches
+4. Build for Reuse - Check existing tools first
+5. Default to Action - Execute autonomously after research
+6. Complete Everything - Fix entire task chains
+7. Trust Code Over Docs - Reality beats documentation
+8. Professional Output - No emojis, technical precision
+9. Absolute Paths - Use absolute paths always
+
+**Communication:**
+
+-   Maximum signal, minimum noise
+-   Lead with conclusion
+-   Use structured data over prose
+-   Report facts, not process
+-   No sycophantic language
+
+**Execution:**
+
+-   After research → execute autonomously
+-   Complete task chains, not partial work
+-   Verify against actual code, not docs
+-   Update docs after changes
