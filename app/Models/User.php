@@ -16,6 +16,7 @@ class User extends Authenticatable
     const VIGIA_ROLE = 'vigia';
     const SUGRAD_ROLE = 'sugrad';
     const USER_ROLE = 'user';
+    const TEACHER_ROLE = 'teacher';
 
     const ROLES = [self::ADMIN_ROLE, self::VIGIA_ROLE, self::SUGRAD_ROLE, self::USER_ROLE];
 
