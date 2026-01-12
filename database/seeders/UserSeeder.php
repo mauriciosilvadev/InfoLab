@@ -20,28 +20,35 @@ class UserSeeder extends Seeder
             [
                 'name' => 'admin',
                 'email' => 'mauricio.s.dev@gmail.com',
+                'role' => User::ADMIN_ROLE,
             ],
             [
                 'name' => 'vigia',
                 'email' => 'vigia@vigia.com',
+                'role' => User::VIGIA_ROLE,
             ],
             [
                 'name' => 'sugrad',
                 'email' => 'sugrad@sugrad.com',
+                'role' => User::SUGRAD_ROLE,
             ],
         ];
 
-        foreach ($users as $user) {
-            $user = User::create([
-                'name' => $user['name'],
-                'username' => $user['name'],
-                'email' => $user['email'],
-                'alternative_email' => $user['email'],
-                'password' => Hash::make('123123'),
-                'email_verified_at' => now(),
-            ]);
+        foreach ($users as $userData) {
+            $user = User::firstOrCreate(
+                ['username' => $userData['name']],
+                [
+                    'name' => $userData['name'],
+                    'email' => $userData['email'],
+                    'alternative_email' => $userData['email'],
+                    'password' => Hash::make('123123'),
+                    'email_verified_at' => now(),
+                ]
+            );
 
-            $user->assignRole($user['name']);
+            if (! $user->hasRole($userData['role'])) {
+                $user->assignRole($userData['role']);
+            }
         }
     }
 }

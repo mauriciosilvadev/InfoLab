@@ -6,11 +6,6 @@ use App\Exceptions\Auth\DirectoryAuthenticationException;
 
 use function array_change_key_case;
 use function is_resource;
-use function ldap_connect;
-use function ldap_get_entries;
-use function ldap_search;
-use function ldap_set_option;
-use function ldap_unbind;
 
 class LdapAuthenticator
 {
@@ -35,14 +30,15 @@ class LdapAuthenticator
 
     /**
      * @return array{
-     *     username:string,
-     *     name:?string,
-     *     email:?string,
-     *     alternative_email:?string,
-     *     cpf:?string,
-     *     matricula:?string,
-     *     status:?string,
-     *     raw:array<string,mixed>
+     * username:string,
+     * name:?string,
+     * email:?string,
+     * alternative_email:?string,
+     * cpf:?string,
+     * matricula:?string,
+     * status:?string,
+     * is_teacher:bool,
+     * raw:array<string,mixed>
      * }
      */
     public function authenticate(string $username, #[\SensitiveParameter] string $password): array
@@ -72,7 +68,8 @@ class LdapAuthenticator
                     'brPersonCPF',
                     'matGrad',
                     'eduPersonScopedAffiliation',
-                ],
+                    'eduPersonAffiliation',
+                ]
             );
 
             if ($search === false) {
@@ -125,7 +122,7 @@ class LdapAuthenticator
         }
 
         if (! @ldap_bind($connection, $this->config['bind_dn'], (string) $this->config['bind_password'])) {
-            throw DirectoryAuthenticationException::connectionFailed('Não foi possível estabelecer ligação com o servidor LDAP.');
+            throw DirectoryAuthenticationException::connectionFailed('Não foi possível estabelecer ligação com o servidor LDAP (Bind Inicial Falhou).');
         }
     }
 
@@ -168,40 +165,64 @@ class LdapAuthenticator
     }
 
     /**
-     * @param  array<string, mixed>  $entry
-     * @return array{
-     *     username:string,
-     *     name:?string,
-     *     email:?string,
-     *     alternative_email:?string,
-     *     cpf:?string,
-     *     matricula:?string,
-     *     status:?string,
-     *     raw:array<string,mixed>
-     * }
+     * Mapeia os dados brutos do LDAP para um array limpo.
      */
     private function mapEntryToUserData(string $username, array $entry): array
     {
-        $name = $entry['displayname'][0]
-            ?? $entry['cn'][0]
-            ?? implode(' ', array_filter([$entry['givenname'][0] ?? null, $entry['sn'][0] ?? null]))
-            ?: null;
-
-        $email = $entry['mail'][0] ?? null;
-        $alternativeEmail = $entry['mailforwardingaddress'][0] ?? null;
-        $cpf = $entry['brpersoncpf'][0] ?? null;
-        $matricula = $entry['matgrad'][0] ?? null;
-        $status = $entry['edupersonscopedaffiliation'][0] ?? null;
+        $name = $this->getAttribute($entry, 'displayname')
+            ?? $this->getAttribute($entry, 'cn')
+            ?? implode(' ', array_filter([
+                $this->getAttribute($entry, 'givenname'),
+                $this->getAttribute($entry, 'sn'),
+            ]))
+            ?: $username;
 
         return [
             'username' => $username,
             'name' => $name,
-            'email' => $email,
-            'alternative_email' => $alternativeEmail,
-            'cpf' => $cpf,
-            'matricula' => $matricula,
-            'status' => $status,
+            'email' => $this->getAttribute($entry, 'mail'),
+            'alternative_email' => $this->getAttribute($entry, 'mailforwardingaddress'),
+            'cpf' => $this->getAttribute($entry, 'brpersoncpf'),
+            'matricula' => $this->getAttribute($entry, 'matgrad'),
+            'status' => $this->getAttribute($entry, 'edupersonscopedaffiliation'),
+            'is_teacher' => $this->isTeacher($entry),
             'raw' => $entry,
         ];
+    }
+
+    /**
+     * Verify if the user is a teacher.
+     */
+    private function isTeacher(array $entry): bool
+    {
+        if (! isset($entry['edupersonaffiliation']) || ($entry['edupersonaffiliation']['count'] ?? 0) === 0) {
+            return false;
+        }
+
+        $affiliations = $entry['edupersonaffiliation'];
+        $count = $affiliations['count'];
+
+        for ($i = 0; $i < $count; $i++) {
+            $value = (string) $affiliations[$i];
+
+            if ($value === '1') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Helper to retrieve the first value of an LDAP attribute.
+     * Avoids warnings about "Undefined array key" or invalid index access.
+     */
+    private function getAttribute(array $entry, string $key): ?string
+    {
+        if (isset($entry[$key]) && ($entry[$key]['count'] ?? 0) > 0) {
+            return (string) $entry[$key][0];
+        }
+
+        return null;
     }
 }

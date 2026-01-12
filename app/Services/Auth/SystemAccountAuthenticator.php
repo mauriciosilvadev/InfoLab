@@ -7,21 +7,9 @@ use Illuminate\Support\Facades\Hash;
 
 class SystemAccountAuthenticator
 {
-    /**
-     * @return array<int, string>
-     */
-    private function privilegedRoles(): array
-    {
-        return [
-            User::ADMIN_ROLE,
-            User::VIGIA_ROLE,
-            User::SUGRAD_ROLE,
-        ];
-    }
-
     public function find(string $username): ?User
     {
-        if (! in_array($username, $this->privilegedRoles())) {
+        if (! in_array($username, User::SYSTEM_ROLES)) {
             return null;
         }
 
@@ -31,7 +19,7 @@ class SystemAccountAuthenticator
             return null;
         }
 
-        return $user->hasRole($this->privilegedRoles()) ? $user : null;
+        return $user->hasRole(User::SYSTEM_ROLES) ? $user : null;
     }
 
     public function verifyPassword(User $user, #[\SensitiveParameter] string $password): bool

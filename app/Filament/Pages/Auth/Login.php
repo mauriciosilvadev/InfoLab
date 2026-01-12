@@ -53,14 +53,15 @@ class Login extends BaseLogin
         }
 
         $data = $this->form->getState();
+        $credentials = [
+            'username' => $data['username'],
+            'password' => $data['password'],
+        ];
 
         /** @var SessionGuard $authGuard */
         $authGuard = Filament::auth();
 
-        $credentials = $this->getCredentialsFromFormData($data);
         $systemAccountAuthenticator = app(SystemAccountAuthenticator::class);
-        $directoryAuthenticator = app(LdapAuthenticator::class);
-        $userSynchronizer = app(UserSynchronizer::class);
 
         $user = null;
         $systemUser = $systemAccountAuthenticator->find($credentials['username']);
@@ -77,8 +78,10 @@ class Login extends BaseLogin
 
             $user = $systemUser;
         } else {
+            $LdapAuthenticator = app(LdapAuthenticator::class);
+
             try {
-                $directoryUser = $directoryAuthenticator->authenticate($credentials['username'], $credentials['password']);
+                $LdapUser = $LdapAuthenticator->authenticate($credentials['username'], $credentials['password']);
             } catch (DirectoryAuthenticationException $exception) {
                 $this->userUndertakingMultiFactorAuthentication = null;
                 $this->fireFailedEvent($authGuard, null, $credentials);
@@ -94,7 +97,7 @@ class Login extends BaseLogin
                 ]);
             }
 
-            $user = $userSynchronizer->sync($directoryUser);
+            $user = app(UserSynchronizer::class)->sync($LdapUser);
         }
 
         if (
@@ -152,13 +155,5 @@ class Login extends BaseLogin
         throw ValidationException::withMessages([
             'data.username' => __('filament-panels::pages/auth/login.messages.failed'),
         ]);
-    }
-
-    protected function getCredentialsFromFormData(array $data): array
-    {
-        return [
-            'username' => $data['username'],
-            'password' => $data['password'],
-        ];
     }
 }

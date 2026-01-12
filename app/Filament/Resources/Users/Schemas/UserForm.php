@@ -35,7 +35,7 @@ class UserForm
                             ->displayFormat('d/m/Y H:i')
                             ->disabled(),
                         Select::make('roles')
-                            ->label('Função')
+                            ->label('Perfil')
                             ->required()
                             ->preload()
                             ->options(function () {
@@ -50,7 +50,7 @@ class UserForm
                                     $component->state($record->roles()->first()?->id);
                                 }
                             })
-                            ->helperText('Selecione a função do usuário'),
+                            ->helperText('Selecione o perfil do usuário. Este é o único campo editável.'),
                     ])
                     ->columns(2),
             ]);

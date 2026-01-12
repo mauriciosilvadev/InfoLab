@@ -20,9 +20,8 @@ class EditUser extends EditRecord
     protected function mutateFormDataBeforeSave(array $data): array
     {
         $this->roleId = $data['roles'] ?? null;
-        unset($data['roles']);
 
-        return $data;
+        return [];
     }
 
     protected function afterSave(): void

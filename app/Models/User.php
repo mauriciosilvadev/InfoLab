@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -18,7 +19,9 @@ class User extends Authenticatable
     const USER_ROLE = 'user';
     const TEACHER_ROLE = 'teacher';
 
-    const ROLES = [self::ADMIN_ROLE, self::VIGIA_ROLE, self::SUGRAD_ROLE, self::USER_ROLE];
+    const ROLES = [self::ADMIN_ROLE, self::VIGIA_ROLE, self::SUGRAD_ROLE, self::USER_ROLE, self::TEACHER_ROLE];
+
+    const SYSTEM_ROLES = [self::ADMIN_ROLE, self::VIGIA_ROLE, self::SUGRAD_ROLE];
 
     /**
      * The attributes that are mass assignable.
@@ -62,9 +65,9 @@ class User extends Authenticatable
     /**
      * Verify if the user has permission to access the Filament panel.
      */
-    public function canAccessFilament(): bool
+    public function canAccessPanel(Panel $panel): bool
     {
-        return $this->hasRole(self::ROLES);
+        return $this->hasAnyRole(self::ROLES);
     }
 
     /**
