@@ -1,0 +1,14 @@
+/*
+|--------------------------------------------------------------------------
+| Filament Admin Panel Custom Styles
+|--------------------------------------------------------------------------
+*/
+
+/* Fix notification modal horizontal scroll - scoped to database notifications only */
+.fi-no-database .fi-modal-window { overflow-x: hidden; }
+.fi-no-database .fi-modal-content { overflow-x: hidden; }
+.fi-no-database .fi-no-notification { max-width: 100%; overflow: hidden; }
+.fi-no-database .fi-no-notification-main { min-width: 0; flex: 1 1 0%; overflow: hidden; }
+.fi-no-database .fi-no-notification-text { min-width: 0; overflow: hidden; }
+.fi-no-database .fi-no-notification-body,
+.fi-no-database .fi-no-notification-title { word-break: break-word; overflow-wrap: break-word; }

@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             RolesSeeder::class,
             UserSeeder::class,
             LaboratorySeeder::class,
+            CourseSeeder::class,
         ]);
 
         $this->command->info('Database seeding completed successfully!');

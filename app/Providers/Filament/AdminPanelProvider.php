@@ -28,15 +28,21 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login(Login::class)
+            ->databaseNotifications()
+            ->databaseNotificationsPolling('30s')
             ->colors([
                 'primary' => Color::Amber,
             ])
+            ->renderHook(
+                \Filament\View\PanelsRenderHook::STYLES_AFTER,
+                fn () => '<link rel="stylesheet" href="' . asset('css/filament/custom.css') . '">'
+            )
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
                 AccountWidget::class,
-                RecentActivitiesWidget::class,
+                // RecentActivitiesWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
