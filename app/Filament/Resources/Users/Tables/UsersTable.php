@@ -13,6 +13,7 @@ class UsersTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->heading('Usuários do sistema')
             ->columns([
                 TextColumn::make('name')
                     ->label('Nome')

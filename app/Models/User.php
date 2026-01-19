@@ -77,4 +77,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserSessionHistory::class);
     }
+
+    /**
+     * Get the lock permissions for the user.
+     */
+    public function lockPermissions(): HasMany
+    {
+        return $this->hasMany(LockPermission::class);
+    }
 }

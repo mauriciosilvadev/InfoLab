@@ -32,7 +32,7 @@ class LockResource extends Resource
 
     public static function getNavigationGroup(): string|UnitEnum|null
     {
-        return 'Infraestrutura';
+        return 'Fechaduras';
     }
 
     public static function form(Schema $schema): Schema

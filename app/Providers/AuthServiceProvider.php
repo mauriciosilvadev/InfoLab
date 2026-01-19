@@ -6,10 +6,12 @@ use App\Models\Activity;
 use App\Models\Course;
 use App\Models\Laboratory;
 use App\Models\Lock;
+use App\Models\LockPermission;
 use App\Models\User;
 use App\Policies\ActivityPolicy;
 use App\Policies\CoursePolicy;
 use App\Policies\LaboratoryPolicy;
+use App\Policies\LockPermissionPolicy;
 use App\Policies\LockPolicy;
 use App\Policies\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -22,6 +24,7 @@ class AuthServiceProvider extends ServiceProvider
         Laboratory::class => LaboratoryPolicy::class,
         Course::class => CoursePolicy::class,
         Lock::class => LockPolicy::class,
+        LockPermission::class => LockPermissionPolicy::class,
         Activity::class => ActivityPolicy::class,
     ];
 

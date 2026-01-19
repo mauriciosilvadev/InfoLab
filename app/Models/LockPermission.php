@@ -13,7 +13,7 @@ use Spatie\Activitylog\Contracts\Activity;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-class Lock extends Model
+class LockPermission extends Model
 {
     use HasFactory, LogsActivity;
 
@@ -21,9 +21,33 @@ class Lock extends Model
      * The attributes that are mass assignable.
      */
     protected $fillable = [
-        'asset_number',
-        'laboratory_id',
+        'name',
+        'email',
     ];
+
+    /**
+     * The attributes that should not be mass assignable.
+     * user_id is managed by observers.
+     */
+    protected $guarded = [
+        'user_id',
+    ];
+
+    /**
+     * Get the user that owns the lock permission.
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the locks that have this permission.
+     */
+    public function locks(): BelongsToMany
+    {
+        return $this->belongsToMany(Lock::class, 'lock_lock_permission');
+    }
 
     /**
      * Configure the activity log options.
@@ -31,7 +55,7 @@ class Lock extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['asset_number', 'laboratory_id'])
+            ->logOnly(['name', 'email', 'user_id'])
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
     }
@@ -43,18 +67,17 @@ class Lock extends Model
     {
         $user = Auth::user();
         $userName = $user?->name ?? 'Sistema';
-        $assetNumber = $this->asset_number;
-        $laboratoryName = $this->laboratory?->name ?? 'N/A';
+        $name = $this->name;
 
         $activity->log_name = ModelsActivity::LOG_TYPE_SYSTEM;
         $activity->causer_id = $user?->getAuthIdentifier();
         $activity->causer_type = $user ? get_class($user) : null;
 
         $description = match ($eventName) {
-            'created' => "Usuário {$userName} criou a fechadura {$assetNumber}",
-            'updated' => "Usuário {$userName} editou a fechadura {$assetNumber}",
-            'deleted' => "Usuário {$userName} deletou a fechadura {$assetNumber}",
-            default => "Atividade realizada na fechadura {$assetNumber}",
+            'created' => "Usuário {$userName} criou a permissão de acesso {$name}",
+            'updated' => "Usuário {$userName} editou a permissão de acesso {$name}",
+            'deleted' => "Usuário {$userName} deletou a permissão de acesso {$name}",
+            default => "Atividade realizada na permissão de acesso {$name}",
         };
 
         $activity->description = $description;
@@ -69,11 +92,10 @@ class Lock extends Model
         $activity->properties = array_merge(
             $existingProperties,
             [
-                'lock_id' => $this->getKey(),
-                'asset_number' => $this->asset_number,
-                'laboratory_id' => $this->laboratory_id,
-                'laboratory_name' => $laboratoryName,
-                'user_id' => $user?->getAuthIdentifier(),
+                'lock_permission_id' => $this->getKey(),
+                'name' => $this->name,
+                'email' => $this->email,
+                'user_id' => $this->user_id,
                 'user_name' => $user?->name ?? 'N/A',
                 'user_email' => $user?->email ?? 'N/A',
                 'ip_address' => request()->ip(),
@@ -81,21 +103,5 @@ class Lock extends Model
                 'timestamp' => now()->toISOString(),
             ]
         );
-    }
-
-    /**
-     * Get the laboratory that owns the lock.
-     */
-    public function laboratory(): BelongsTo
-    {
-        return $this->belongsTo(Laboratory::class);
-    }
-
-    /**
-     * Get the lock permissions that have access to this lock.
-     */
-    public function lockPermissions(): BelongsToMany
-    {
-        return $this->belongsToMany(LockPermission::class, 'lock_lock_permission');
     }
 }
