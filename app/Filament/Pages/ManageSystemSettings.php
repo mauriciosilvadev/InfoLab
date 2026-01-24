@@ -28,6 +28,8 @@ class ManageSystemSettings extends SettingsPage
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-cog-6-tooth';
 
+    protected static ?int $navigationSort = 1;
+
     public static function canAccess(): bool
     {
         return auth()->user()?->hasRole(User::ADMIN_ROLE) ?? false;

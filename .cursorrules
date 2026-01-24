@@ -15,7 +15,7 @@ This file ensures all operational guidelines are loaded. All rules in `.cursor/`
 
 ## Project-Specific Rules
 
--   **Laravel Commands:** Always use `sol` (not `php`) for commands
+-   **Laravel Commands:** Always use `sail` (not `php`) for commands
 -   **MCP:** Always check if MCP is active before starting; if not accessible, ask user: "Do you want to activate MCP before we begin?"
 -   **Language:** Always respond in Portuguese. For commits, write in English.
 
